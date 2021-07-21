@@ -3,7 +3,7 @@ import VueRouter from "vue-router";
 import Home from "../views/Home";
 import Search from "../views/Search";
 import Login from "../views/Login";
-import Rigister from "../views/Rigister";
+import Register from "../views/Register";
 
 Vue.use(VueRouter);
 
@@ -22,17 +22,17 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login,
-    meta: {
-      isHideFooter: true,
-    },
+    meta:{
+      isHideFooter:true
+    }
   },
   {
-    path: "/rigister",
-    name: "Rigister",
-    component: Rigister,
-    meta: {
-      isHideFooter: true,
-    },
+    path: "/register",
+    name: "Register",
+    component: Register,
+    meta:{
+      isHideFooter:true
+    }
   },
 ];
 
