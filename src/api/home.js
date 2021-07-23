@@ -1,7 +1,9 @@
-import axios from "axios";
+import request from "../utils/request";
+
+
 export const reqGetCategoryList = () => {
-  return axios({
+  return request({
     method: "Get",
-    url: "/api/product/getBaseCategoryList",
+    url: "/product/getBaseCategoryList",
   });
 };

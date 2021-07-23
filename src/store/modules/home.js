@@ -6,16 +6,9 @@ const state = {
 const getters = {};
 const actions = {
   async getCategoryLis({ commit }) {
-    try {
-      const res = await reqGetCategoryList();
-      if (res.data.code === 200) {
-        commit("GET_CATEGORY_LIS", res.data.data.slice(0, 15));
-      } else {
-        console.log(res.data.message);
-      }
-    } catch (e) {
-      console.log(e);
-    }
+    const data = await reqGetCategoryList();
+
+    commit("GET_CATEGORY_LIS", data.slice(0, 15));
   },
 };
 const mutations = {
