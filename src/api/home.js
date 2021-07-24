@@ -14,3 +14,10 @@ export const reqGetBanners = () => {
     url: "/banners",
   });
 };
+
+export const reqGetFloors = () => {
+  return requestMock({
+    method: "GET",
+    url: "floors",
+  });
+};

@@ -1,10 +1,11 @@
-import { reqGetCategoryList, reqGetBanners } from "@/api/home";
+import { reqGetCategoryList, reqGetBanners,reqGetFloors } from "@/api/home";
 
 const state = {
   //  三级分类
   categoryList: [],
   // 轮播图
   banners: [],
+  floors: [],
 };
 const getters = {};
 const actions = {
@@ -18,6 +19,10 @@ const actions = {
     const data = await reqGetBanners();
     commit("GET_BANNERS", data);
   },
+  async getFloors({ commit }) {
+    const data = await reqGetFloors();
+    commit("GET_FLOORS", data);
+  },
 };
 const mutations = {
   GET_CATEGORY_LIS(state, categoryList) {
@@ -25,6 +30,9 @@ const mutations = {
   },
   GET_BANNERS(state, banners) {
     state.banners = banners;
+  },
+  GET_FLOORS(state, floors) {
+    state.floors = floors;
   },
 };
 

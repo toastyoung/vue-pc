@@ -28,26 +28,30 @@ export default {
     imageList: Array,
   },
   watch: {
-    imageList() {
-      this.$nextTick(()=>{
-        // new Swiper必须等DOM元素生成好才行
-      this.swiper = new Swiper(this.$refs.swiper, {
-        navigation: {
-          // 左右箭头
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-        },
-        pagination: {
-          // 小圆点
-          el: ".swiper-pagination",
-        },
-        loop: true, // 无缝轮播
-        autoplay: {
-          // 自动轮播
-          delay: 1000,
-        },
-      });
-      })
+    imageList: {
+      handler(imageList) {
+        if (!imageList.length) return;
+        this.$nextTick(() => {
+          // new Swiper必须等DOM元素生成好才行
+          this.swiper = new Swiper(this.$refs.swiper, {
+            navigation: {
+              // 左右箭头
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+            },
+            pagination: {
+              // 小圆点
+              el: ".swiper-pagination",
+            },
+            loop: true, // 无缝轮播
+            autoplay: {
+              // 自动轮播
+              delay: 1000,
+            },
+          });
+        });
+      },
+      immediate: true,
     },
   },
 };

@@ -1,5 +1,6 @@
 import Mock from "mockjs";
-import banners from './banners.json'
+import banners from "./banners.json";
+import floors from "./floors.json";
 
 // const Random = Mock.Random;
 
@@ -20,4 +21,9 @@ Mock.mock("/mock/banners", "get", {
   //   },
   // ],
   data: banners,
+});
+
+Mock.mock("/mock/floors", "get", {
+  code: 200,
+  data: floors,
 });
