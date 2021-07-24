@@ -13,7 +13,7 @@ const errorMessage = {
 
 // request功能与axios基本一致
 const request = axios.create({
-  baseURL: "/api", //增加请求地址公共前缀
+  baseURL: "/mock", //增加请求地址公共前缀
   headers: {}, //公共请求头
   timeout: 10000, //请求超时时间
 });

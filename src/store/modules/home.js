@@ -1,7 +1,10 @@
-import { reqGetCategoryList } from "../../api/home";
+import { reqGetCategoryList, reqGetBanners } from "@/api/home";
 
 const state = {
+  //  三级分类
   categoryList: [],
+  // 轮播图
+  banners: [],
 };
 const getters = {};
 const actions = {
@@ -10,10 +13,18 @@ const actions = {
 
     commit("GET_CATEGORY_LIS", data.slice(0, 15));
   },
+
+  async getBanners({ commit }) {
+    const data = await reqGetBanners();
+    commit("GET_BANNERS", data);
+  },
 };
 const mutations = {
   GET_CATEGORY_LIS(state, categoryList) {
     state.categoryList = categoryList;
+  },
+  GET_BANNERS(state, banners) {
+    state.banners = banners;
   },
 };
 
