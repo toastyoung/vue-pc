@@ -22,7 +22,7 @@
         <img src="./logo.png" alt="尚品汇" class="header-logo" />
       </router-link>
       <form class="header-search" @submit.prevent="goSearch">
-        <input type="text" />
+        <input type="text" v-model="keyword" />
         <button type="submit">搜索</button>
       </form>
     </div>
@@ -32,9 +32,27 @@
 <script>
 export default {
   name: "Header",
+  data() {
+    return {
+      keyword: this.$route.params.keyword,
+    };
+  },
   methods: {
     goSearch() {
-      this.$router.history.push("/search");
+      const {
+        keyword,
+        $route: { query },
+      } = this;
+
+      const location = { name: "Search" };
+      // 如果有query参数就添加上去
+      location.query = query;
+
+      // 当params有值则添加上去
+      if (keyword) {
+        location.params = { keyword };
+      }
+      this.$router.history.push(location);
     },
   },
 };

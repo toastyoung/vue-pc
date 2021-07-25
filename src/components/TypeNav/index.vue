@@ -1,8 +1,8 @@
 <template>
   <div class="type-nav">
-    <div class="container">
-      <h2 class="all">全部商品分类</h2>
-      <nav class="nav">
+    <div class="container" @mouseleave="isShow = false">
+      <h2 class="all" @mouseenter=" isShow = true">全部商品分类</h2>
+      <nav class="nav" @mouseenter="isShow = false">
         <a href="###">服装城</a>
         <a href="###">美妆馆</a>
         <a href="###">尚品汇超市</a>
@@ -12,11 +12,16 @@
         <a href="###">有趣</a>
         <a href="###">秒杀</a>
       </nav>
-      <div class="sort">
-        <div class="all-sort-list2">
+      <div class="sort" v-show="$route.path === '/' || isShow">
+        <div class="all-sort-list2" @click="goSearch">
           <div class="item bo" v-for="c1 in categoryList" :key="c1.categoryId">
             <h3>
-              <a href="">{{ c1.categoryName }}</a>
+              <a
+                :data-categoryName="c1.categoryName"
+                :data-level="1"
+                :data-categoryId="c1.categoryId"
+                >{{ c1.categoryName }}</a
+              >
             </h3>
             <div class="item-list clearfix">
               <div
@@ -26,11 +31,21 @@
               >
                 <dl class="fore">
                   <dt>
-                    <a href="">{{ c2.categoryName }}</a>
+                    <a
+                      :data-categoryName="c2.categoryName"
+                      :data-level="2"
+                      :data-categoryId="c2.categoryId"
+                      >{{ c2.categoryName }}</a
+                    >
                   </dt>
                   <dd>
                     <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
-                      <a href="">{{ c3.categoryName }}</a>
+                      <a
+                        :data-categoryName="c3.categoryName"
+                        :data-level="3"
+                        :data-categoryId="c3.categoryId"
+                        >{{ c3.categoryName }}</a
+                      >
                     </em>
                   </dd>
                 </dl>
@@ -50,11 +65,30 @@ export default {
   mounted() {
     this.getCategoryLis();
   },
+  data() {
+    return {
+      isShow: false,
+    };
+  },
   computed: {
     ...mapState("home", ["categoryList"]),
   },
   methods: {
     ...mapActions("home", ["getCategoryLis"]),
+    goSearch(e) {
+      const { categoryid, categoryname, level } = e.target.dataset;
+      if (!level) return;
+      console.log(this.$router, this.$route);
+      this.$router.history.push({
+        name: "Search",
+        query: {
+          categoryname,
+          [`category${level}Id`]: categoryid,
+        },
+        // 添加params参数
+        params: this.$route.params,
+      });
+    },
   },
 };
 </script>
@@ -102,7 +136,7 @@ export default {
 
       .all-sort-list2 {
         .item {
-          &:hover{
+          &:hover {
             background-color: rgb(72, 238, 238);
           }
           h3 {
