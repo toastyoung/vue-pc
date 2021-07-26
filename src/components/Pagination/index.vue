@@ -10,7 +10,9 @@
     <button @click="myCurrentPage = 1" :class="{ active: myCurrentPage === 1 }">
       1
     </button>
-    <button><span class="iconfont icon-ellipsis"></span></button>
+    <button v-show="totalPages > 7 && myCurrentPage > 4">
+      <span class="iconfont icon-ellipsis"></span>
+    </button>
     <button
       v-for="(item, index) in startEnd.end - startEnd.start + 1"
       :key="item"
@@ -19,7 +21,9 @@
     >
       {{ index + startEnd.start }}
     </button>
-    <button><span class="iconfont icon-ellipsis"></span></button>
+    <button v-show="totalPages > 7 && myCurrentPage <= totalPages - 4">
+      <span class="iconfont icon-ellipsis"></span>
+    </button>
     <button
       @click="myCurrentPage = totalPages"
       :class="{ active: myCurrentPage === totalPages }"
@@ -33,8 +37,8 @@
     >
       <span class="iconfont icon-arrow-right"></span>
     </button>
-    <select>
-      <option  v-for="size in pageSizes" :key="size" :value="size">
+    <select v-model="myPageSize">
+      <option v-for="size in pageSizes" :key="size" :value="size">
         每页 {{ size }} 条
       </option>
     </select>
@@ -48,13 +52,14 @@ export default {
   data() {
     return {
       myCurrentPage: this.currentPage,
+      myPageSize: this.pageSize,
     };
   },
   props: {
     // 当前页
     currentPage: {
       type: Number,
-      default: 11,
+      default: 1,
     },
     // 每页条数
     pageSize: {
@@ -68,12 +73,12 @@ export default {
     },
     total: {
       type: Number,
-      default: 20,
+      default: 1200,
     },
   },
   computed: {
     totalPages() {
-      return Math.ceil(this.total / this.pageSize);
+      return Math.ceil(this.total / this.myPageSize);
     },
     startEnd() {
       const { totalPages, myCurrentPage } = this;
@@ -96,6 +101,13 @@ export default {
       let end = start + 4;
 
       return { start, end };
+    },
+  },
+  watch: {
+    myPageSize(newMyPageSize, oldMyPageSize) {
+      this.myCurrentPage = Math.ceil(
+        (oldMyPageSize * this.myCurrentPage) / newMyPageSize
+      );
     },
   },
 };
