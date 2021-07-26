@@ -11,38 +11,74 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">iphone<i>×</i></li>
-            <li class="with-x">华为<i>×</i></li>
-            <li class="with-x">OPPO<i>×</i></li>
+            <li class="with-x" v-show="$route.params.keyword">
+              {{ $route.params.keyword }}<i @click="delKeyword">×</i>
+            </li>
+            <li class="with-x" v-show="$route.query.categoryname">
+              {{ $route.query.categoryname }}<i @click="delCategory">×</i>
+            </li>
+            <li class="with-x" v-show="options.trademark">
+              {{ options.trademark.split(":")[1]
+              }}<i @click="delTrademark">×</i>
+            </li>
+            <li
+              class="with-x"
+              v-for="(prop, index) in options.props"
+              :key="prop"
+            >
+              {{ `${prop.split(":")[1]}:${prop.split(":")[2]}`
+              }}<i @click="delProp(index)">×</i>
+            </li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector :searchTrademark="searchTrademark" @searchprops="searchprops" />
+        <SearchSelector
+          :searchTrademark="searchTrademark"
+          @searchprops="searchprops"
+        />
 
         <!--details-->
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li
+                  :class="{ active: order[0] === '1' }"
+                  @click="setOrder('1')"
+                >
+                  <a
+                    >综合<span
+                      v-show="order[0] === '1'"
+                      :class="[
+                        'iconfont',
+                        order[1] === 'desc' ? 'icon-falling' : 'icon-rising',
+                      ]"
+                    ></span
+                  ></a>
                 </li>
                 <li>
-                  <a href="#">销量</a>
+                  <a>销量</a>
                 </li>
                 <li>
-                  <a href="#">新品</a>
+                  <a>新品</a>
                 </li>
                 <li>
-                  <a href="#">评价</a>
+                  <a>评价</a>
                 </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li
+                  :class="{ active: order[0] === '2' }"
+                  @click="setOrder('2')"
+                >
+                  <a
+                    >价格<span
+                        v-show="order[0] === '2'"
+                      :class="[
+                        'iconfont',
+                        order[1] === 'desc' ? 'icon-falling' : 'icon-rising',
+                      ]"
+                    ></span
+                  ></a>
                 </li>
               </ul>
             </div>
@@ -84,33 +120,7 @@
             </ul>
           </div>
           <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
+            <Pagination />
           </div>
         </div>
       </div>
@@ -140,6 +150,9 @@ export default {
   },
   computed: {
     ...mapState("search", ["goodsList"]),
+    order() {
+      return this.options.order.split(":");
+    },
   },
   methods: {
     ...mapActions("search", ["searchGoodsList"]),
@@ -163,6 +176,37 @@ export default {
       if (props.some((p) => p === prop)) return;
 
       props.push(prop);
+      this.search();
+    },
+    delKeyword() {
+      this.$router.history.push({
+        name: "Search",
+        query: this.$route.query,
+      });
+    },
+    delCategory() {
+      this.$router.history.push({
+        name: "Search",
+        params: this.$route.params,
+      });
+    },
+    delTrademark() {
+      this.options.trademark = "";
+      this.search();
+    },
+    delProp(index) {
+      console.log(index);
+      this.options.props.splice(index, 1);
+      this.search();
+    },
+    setOrder(orderName) {
+      // 初始化为desc
+      let orderType = "desc";
+      if (orderName === this.order[0]) {//判断是否为当前点击
+        orderType = this.order[1] === "desc" ? "asc" : "desc";
+      }
+
+      this.options.order = `${orderName}:${orderType}`;
       this.search();
     },
   },
@@ -419,90 +463,8 @@ export default {
       }
 
       .page {
-        width: 733px;
-        height: 66px;
-        overflow: hidden;
-        float: right;
-
-        .sui-pagination {
-          margin: 18px 0;
-
-          ul {
-            margin-left: 0;
-            margin-bottom: 0;
-            vertical-align: middle;
-            width: 490px;
-            float: left;
-
-            li {
-              line-height: 18px;
-              display: inline-block;
-
-              a {
-                position: relative;
-                float: left;
-                line-height: 18px;
-                text-decoration: none;
-                background-color: #fff;
-                border: 1px solid #e0e9ee;
-                margin-left: -1px;
-                font-size: 14px;
-                padding: 9px 18px;
-                color: #333;
-              }
-
-              &.active {
-                a {
-                  background-color: #fff;
-                  color: #e1251b;
-                  border-color: #fff;
-                  cursor: default;
-                }
-              }
-
-              &.prev {
-                a {
-                  background-color: #fafafa;
-                }
-              }
-
-              &.disabled {
-                a {
-                  color: #999;
-                  cursor: default;
-                }
-              }
-
-              &.dotted {
-                span {
-                  margin-left: -1px;
-                  position: relative;
-                  float: left;
-                  line-height: 18px;
-                  text-decoration: none;
-                  background-color: #fff;
-                  font-size: 14px;
-                  border: 0;
-                  padding: 9px 18px;
-                  color: #333;
-                }
-              }
-
-              &.next {
-                a {
-                  background-color: #fafafa;
-                }
-              }
-            }
-          }
-
-          div {
-            color: #333;
-            font-size: 14px;
-            float: right;
-            width: 241px;
-          }
-        }
+        display: flex;
+        justify-content: center;
       }
     }
   }

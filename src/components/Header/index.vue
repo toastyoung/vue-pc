@@ -55,6 +55,11 @@ export default {
       this.$router.history.push(location);
     },
   },
+  watch: {
+    $route($route) {
+      this.keyword = $route.params.keyword;
+    },
+  },
 };
 </script>
 

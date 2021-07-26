@@ -19,7 +19,6 @@ const actions = {
 };
 const mutations = {
   SEARCH_GOODSLIST(state, data) {
-    console.log(data);
     state.goodsList = data.goodsList;
     state.attrsList = data.attrsList;
     state.trademarkList = data.trademarkList;
