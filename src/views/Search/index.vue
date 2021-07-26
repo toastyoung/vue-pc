@@ -19,7 +19,7 @@
         </div>
 
         <!--selector-->
-        <SearchSelector />
+        <SearchSelector :searchTrademark="searchTrademark" @searchprops="searchprops" />
 
         <!--details-->
         <div class="details clearfix">
@@ -152,6 +152,18 @@ export default {
         ...params,
       };
       this.searchGoodsList(options);
+    },
+    searchTrademark(tm) {
+      if (this.options.trademark) return;
+      this.options.trademark = tm;
+      this.search();
+    },
+    searchprops(prop) {
+      const { props } = this.options;
+      if (props.some((p) => p === prop)) return;
+
+      props.push(prop);
+      this.search();
     },
   },
   watch: {
