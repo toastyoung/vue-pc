@@ -1,175 +1,179 @@
 <template>
-  <div class="register">
-    <div class="register-top">
-      <h3>注册新用户</h3>
-      <p>
-        我有账号，去
-        <router-link to="/login"><a>登录</a></router-link>
-      </p>
+  <div class="register-container">
+    <!-- 注册内容 -->
+    <div class="register">
+      <h3>注册新用户
+        <span class="go">我有账号，去 <a href="login.html" target="_blank">登陆</a>
+        </span>
+      </h3>
+      <div class="content">
+        <label>手机号:</label>
+        <input type="text" placeholder="请输入你的手机号">
+        <span class="error-msg">错误提示信息</span>
+      </div>
+      <div class="content">
+        <label>验证码:</label>
+        <input type="text" placeholder="请输入验证码">
+        <img ref="code"  alt="code">
+        <span class="error-msg">错误提示信息</span>
+      </div>
+      <div class="content">
+        <label>登录密码:</label>
+        <input type="text" placeholder="请输入你的登录密码">
+        <span class="error-msg">错误提示信息</span>
+      </div>
+      <div class="content">
+        <label>确认密码:</label>
+        <input type="text" placeholder="请输入确认密码">
+        <span class="error-msg">错误提示信息</span>
+      </div>
+      <div class="controls">
+        <input name="m1" type="checkbox">
+        <span>同意协议并注册《尚品汇用户协议》</span>
+        <span class="error-msg">错误提示信息</span>
+      </div>
+      <div class="btn">
+        <button>完成注册</button>
+      </div>
     </div>
-    <div class="register-main">
-      <form class="register-form">
-        <div class="register-content">
-          手机号：<input
-            type="text"
-            placeholder="请输入您的手机号"
-            v-model="phone"
-            @input="phoneCheck"
-            @blur="phoneCheck"
-          />
-          <span>{{ phoneTip }}</span>
-        </div>
-        <div class="register-content register-code">
-          验证码：<input
-            type="text"
-            placeholder="请输入验证码"
-            v-model="code"
-          />
-          <span>xxx</span>
-          <button>发送验证码</button>
-        </div>
-        <div class="register-content">
-          登录密码：<input
-            type="password"
-            placeholder="请输入您的密码"
-            v-model="password"
-          />
-          <span>我xx</span>
-        </div>
-        <div class="register-content">
-          确认密码：<input
-            type="password"
-            placeholder="请输入确认密码"
-            v-model="rePassword"
-          />
-          <span>xxx</span>
-        </div>
-        <div class="register-rules">
-          <input type="radio" />
-          同意协议并注册《尚品汇用户协议》
-          <span>请同意用户协议 </span>
-        </div>
-        <button type="submit" class="btn">完成注册</button>
-      </form>
+
+    <!-- 底部 -->
+    <div class="copyright">
+      <ul>
+        <li>关于我们</li>
+        <li>联系我们</li>
+        <li>联系客服</li>
+        <li>商家入驻</li>
+        <li>营销中心</li>
+        <li>手机尚品汇</li>
+        <li>销售联盟</li>
+        <li>尚品汇社区</li>
+      </ul>
+      <div class="address">地址：北京市昌平区宏福科技园综合楼6层</div>
+      <div class="beian">京ICP备19006430号
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {
-  name: "Rigister",
-  data() {
-    return {
-      phone: "",
-      phoneTip: "",
-      code: "",
-      password: "",
-      rePassword: "",
-    };
-  },
-  methods: {
-    phoneCheck() {
-      const phoneReg = /^1[3-9]\d{9}$/;
-      const { phone } = this;
-      clearTimeout(timer);
-      let timer = setTimeout(() => {
-        if (!phoneReg.test(phone)) {
-          if (!phone.trim()) {
-            this.phoneTip = "请输入手机号";
-          } else {
-            this.phoneTip = "请输入合法手机号";
-          }
-        } else {
-          this.phoneTip = "";
-        }
-      }, 1000);
-    },
-  },
-};
+  export default {
+    name: 'Register'
+  }
 </script>
 
 <style lang="less" scoped>
-.register {
-  width: 1200px;
-  height: 450px;
-  margin: 0 auto;
-  border: 1px solid #dfdfdf;
-}
-.register-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 5px 15px;
-  height: 30px;
-  background-color: #ececec;
-  h3 {
-    font-size: 20px;
-  }
-  p {
-    color: #000;
-    font-size: 14px;
-    font-weight: 700;
-    a {
-      color: red;
+  .register-container {
+    .register {
+      width: 1200px;
+      height: 445px;
+      border: 1px solid rgb(223, 223, 223);
+      margin: 0 auto;
+
+      h3 {
+        background: #ececec;
+        margin: 0;
+        padding: 6px 15px;
+        color: #333;
+        border-bottom: 1px solid #dfdfdf;
+        font-size: 20.04px;
+        line-height: 30.06px;
+
+        span {
+          font-size: 14px;
+          float: right;
+
+          a {
+            color: #e1251b;
+          }
+        }
+      }
+
+      div:nth-of-type(1) {
+        margin-top: 40px;
+      }
+
+      .content {
+        padding-left: 390px;
+        margin-bottom: 18px;
+        position: relative;
+
+        label {
+          font-size: 14px;
+          width: 96px;
+          text-align: right;
+          display: inline-block;
+        }
+
+        input {
+          width: 270px;
+          height: 38px;
+          padding-left: 8px;
+          box-sizing: border-box;
+          margin-left: 5px;
+          outline: none;
+          border: 1px solid #999;
+        }
+
+        img {
+          vertical-align: sub;
+        }
+
+        .error-msg {
+          position: absolute;
+          top: 100%;
+          left: 495px;
+          color: red;
+        }
+      }
+
+      .controls {
+        text-align: center;
+        position: relative;
+
+        input {
+          vertical-align: middle;
+        }
+
+        .error-msg {
+          position: absolute;
+          top: 100%;
+          left: 495px;
+          color: red;
+        }
+      }
+
+      .btn {
+        text-align: center;
+        line-height: 36px;
+        margin: 17px 0 0 55px;
+
+        button {
+          outline: none;
+          width: 270px;
+          height: 36px;
+          background: #e1251b;
+          color: #fff !important;
+          display: inline-block;
+          font-size: 16px;
+        }
+      }
+    }
+
+    .copyright {
+      width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+      line-height: 24px;
+
+      ul {
+        li {
+          display: inline-block;
+          border-right: 1px solid #e4e4e4;
+          padding: 0 20px;
+          margin: 15px 0;
+        }
+      }
     }
   }
-}
-.register-main {
-  text-align: center;
-  margin-top: 40px;
-}
-.register-form {
-  display: inline-block;
-  width: 360px;
-  height: 350px;
-  text-align: right;
-  font-size: 14px;
-  margin-left: -20px;
-  .register-code {
-    position: relative;
-    button {
-      position: absolute;
-      top: 10px;
-      width: 64px;
-      height: 20px;
-      font-size: 12px;
-      background-color: #eeeeee;
-      border: 1px solid #d0d0d0;
-      color: #333;
-    }
-  }
-  .register-content input {
-    width: 270px;
-    height: 40px;
-    box-sizing: border-box;
-    border: 1px solid #999999;
-    font-size: 12px;
-    padding: 8px;
-  }
-  span {
-    display: block;
-    width: 300px;
-    height: 14px;
-    margin-left: 100px;
-    margin-bottom: 2px;
-    text-align: left;
-    font-size: 12px;
-    color: red;
-  }
-  .register-rules {
-    text-align: left;
-    margin-left: 100px;
-    font-size: 12px;
-    span {
-      margin: 0;
-    }
-  }
-  .btn {
-    width: 270px;
-    height: 36px;
-    font-size: 16px;
-    color: #fff;
-    background-color: red;
-  }
-}
 </style>

@@ -72,7 +72,7 @@
                 >
                   <a
                     >价格<span
-                        v-show="order[0] === '2'"
+                      v-show="order[0] === '2'"
                       :class="[
                         'iconfont',
                         order[1] === 'desc' ? 'icon-falling' : 'icon-rising',
@@ -88,9 +88,14 @@
               <li class="yui3-u-1-5" v-for="goods in goodsList" :key="goods.id">
                 <div class="list-wrap">
                   <div class="p-img">
-                    <a href="item.html" target="_blank"
-                      ><img :src="goods.defaultImg"
-                    /></a>
+                    <router-link
+                      :to="{
+                        name: 'Detail',
+                        params: { id: goods.id },
+                      }"
+                    >
+                      <img :src="goods.defaultImg" />
+                    </router-link>
                   </div>
                   <div class="price">
                     <strong>
@@ -105,12 +110,18 @@
                     <i class="command">已有<span>2000</span>人评价</i>
                   </div>
                   <div class="operate">
-                    <a
-                      href="success-cart.html"
-                      target="_blank"
-                      class="sui-btn btn-bordered btn-danger"
-                      >加入购物车</a
+                    <router-link
+                      :to="{
+                        name: 'AddCartSuccess',
+                      }"
                     >
+                      <a
+                        href="success-cart.html"
+                        target="_blank"
+                        class="sui-btn btn-bordered btn-danger"
+                        >加入购物车</a
+                      >
+                    </router-link>
                     <a href="javascript:void(0);" class="sui-btn btn-bordered"
                       >收藏</a
                     >
@@ -120,7 +131,13 @@
             </ul>
           </div>
           <div class="fr page">
-            <Pagination />
+            <Pagination
+              :currentPage.sync="options.pageNo"
+              :pageSize="options.pageSize"
+              :total="total"
+              @current-change="handleCurrentChange"
+              @size-change="handleSizeChange"
+            />
           </div>
         </div>
       </div>
@@ -149,7 +166,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("search", ["goodsList"]),
+    ...mapState("search", ["goodsList", "total"]),
     order() {
       return this.options.order.split(":");
     },
@@ -202,11 +219,20 @@ export default {
     setOrder(orderName) {
       // 初始化为desc
       let orderType = "desc";
-      if (orderName === this.order[0]) {//判断是否为当前点击
+      if (orderName === this.order[0]) {
+        //判断是否为当前点击
         orderType = this.order[1] === "desc" ? "asc" : "desc";
       }
 
       this.options.order = `${orderName}:${orderType}`;
+      this.search();
+    },
+    handleCurrentChange(currentPage) {
+      this.options.pageNo = currentPage;
+      this.search();
+    },
+    handleSizeChange(pageSize) {
+      this.options.pageSize = pageSize;
       this.search();
     },
   },

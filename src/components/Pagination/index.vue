@@ -10,7 +10,9 @@
     <button @click="myCurrentPage = 1" :class="{ active: myCurrentPage === 1 }">
       1
     </button>
-    <button><span class="iconfont icon-ellipsis"></span></button>
+    <button v-show="startEnd.start > 2">
+      <span class="iconfont icon-ellipsis"></span>
+    </button>
     <button
       v-for="(item, index) in startEnd.end - startEnd.start + 1"
       :key="item"
@@ -19,7 +21,9 @@
     >
       {{ index + startEnd.start }}
     </button>
-    <button><span class="iconfont icon-ellipsis"></span></button>
+    <button v-show="startEnd.end < totalPages - 1">
+      <span class="iconfont icon-ellipsis"></span>
+    </button>
     <button
       @click="myCurrentPage = totalPages"
       :class="{ active: myCurrentPage === totalPages }"
@@ -33,8 +37,8 @@
     >
       <span class="iconfont icon-arrow-right"></span>
     </button>
-    <select>
-      <option  v-for="size in pageSizes" :key="size" :value="size">
+    <select v-model="myPageSize">
+      <option v-for="size in pageSizes" :key="size" :value="size">
         每页 {{ size }} 条
       </option>
     </select>
@@ -43,11 +47,14 @@
 </template>
 
 <script>
+import _ from "lodash";
 export default {
   name: "Pagination",
   data() {
     return {
       myCurrentPage: this.currentPage,
+      myPageSize: this.pageSize,
+      isPageSizeChange: false,
     };
   },
   props: {
@@ -68,19 +75,19 @@ export default {
     },
     total: {
       type: Number,
-      default: 20,
+      default: 200,
     },
   },
   computed: {
     totalPages() {
-      return Math.ceil(this.total / this.pageSize);
+      return Math.ceil(this.total / this.myPageSize);
     },
     startEnd() {
       const { totalPages, myCurrentPage } = this;
       if (totalPages <= 2) {
         return {
-          start: 0,
-          end: -1,
+          start: 2,
+          end: 1,
         };
       }
       if (totalPages <= 7) {
@@ -96,6 +103,32 @@ export default {
       let end = start + 4;
 
       return { start, end };
+    },
+  },
+  watch: {
+    myCurrentPage: {
+      handler: _.debounce(
+        function (myCurrentPage) {
+          if (this.isPageSizeChange) {
+            this.isPageSizeChange = false;
+            return;
+          }
+          this.$emit("current-change", myCurrentPage);
+        },
+        500,
+        {
+          leading: true, //一上来触发一次
+          maxWait: 5000, //最大等待时间
+        }
+      ),
+    },
+    myPageSize(myPageSize) {
+      if (this.myCurrentPage > this.totalPages) {
+        this.isPageSizeChange = true;
+        this.myCurrentPage = this.totalPages;
+        this.$emit("update:currentPage", this.totalPages);
+      }
+      this.$emit("size-change", myPageSize);
     },
   },
 };
