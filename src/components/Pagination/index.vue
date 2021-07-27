@@ -61,7 +61,7 @@ export default {
     // 当前页
     currentPage: {
       type: Number,
-      default: 11,
+      default: 1,
     },
     // 每页条数
     pageSize: {
