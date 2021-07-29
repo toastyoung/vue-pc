@@ -78,7 +78,7 @@ export default {
     goSearch(e) {
       const { categoryid, categoryname, level } = e.target.dataset;
       if (!level) return;
-      console.log(this.$router, this.$route);
+
       this.$router.history.push({
         name: "Search",
         query: {

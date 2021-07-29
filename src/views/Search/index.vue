@@ -212,7 +212,6 @@ export default {
       this.search();
     },
     delProp(index) {
-      console.log(index);
       this.options.props.splice(index, 1);
       this.search();
     },

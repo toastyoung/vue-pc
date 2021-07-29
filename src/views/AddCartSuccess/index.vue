@@ -23,7 +23,7 @@
             >查看商品详情</a
           >
           <router-link to="/shopCart">
-            <a @click="goCartList">去购物车结算 ></a>
+            <a >去购物车结算 ></a>
           </router-link>
         </div>
       </div>
@@ -32,9 +32,8 @@
 </template>
 
 <script>
-import {reqGetCartList} from '@/api/cartList'
 export default {
-  name: "AddCartSuccess",
+  name: "reqGetCartList",
   data() {
     return {
       goods: {},
@@ -42,13 +41,6 @@ export default {
   },
   mounted() {
     this.goods = JSON.parse(sessionStorage.getItem("goods"));
-    console.log(this.goods);
-  },
-  methods: {
-    async goCartList() {
-      const data = await reqGetCartList();
-      console.log(data);
-    },
   },
 };
 </script>

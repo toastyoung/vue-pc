@@ -339,7 +339,7 @@ import ImageList from "./ImageList/ImageList";
 import Zoom from "./Zoom/Zoom";
 import InputNumber from "./InputNumber";
 import { reqGetGoodsDetail } from "@/api/detail";
-import { reqGetShopCart } from "@/api/shopCart";
+import { reqAddCart } from "@/api/shopCart";
 
 export default {
   name: "Detail",
@@ -372,7 +372,7 @@ export default {
     async addCart() {
       const { id, skuName, price, skuDefaultImg } = this.skuInfo;
       const { skuNum } = this;
-      await reqGetShopCart(id, this.skuNum);
+      await reqAddCart(id, this.skuNum);
       sessionStorage.setItem(
         "goods",
         JSON.stringify({
