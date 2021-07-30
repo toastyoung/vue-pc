@@ -14,24 +14,36 @@
           </ul>
 
           <div class="content">
-            <form action="##">
-              <div class="input-text clearFix">
-                <span></span>
-                <input type="text" placeholder="邮箱/用户名/手机号" />
-              </div>
-              <div class="input-text clearFix">
-                <span class="pwd"></span>
-                <input type="text" placeholder="请输入密码" />
-              </div>
-              <div class="setting clearFix">
-                <label class="checkbox inline">
-                  <input name="m1" type="checkbox" value="2" checked="" />
-                  自动登录
-                </label>
-                <span class="forget">忘记密码？</span>
-              </div>
-              <button class="btn">登&nbsp;&nbsp;录</button>
-            </form>
+            <ValidationObserver v-slot="{ handleSubmit }">
+              <form @submit.prevent="handleSubmit(login)">
+                <ValidationProvider
+                  class="input-text clearFix"
+                  tag="div"
+                  rules="required|phone"
+                  mode="lazy"
+                  v-slot="{ errors }"
+                >
+                  <span>{{ errors[0] }}</span>
+                  <input
+                    type="text"
+                    placeholder="邮箱/用户名/手机号"
+                    v-model="user.phone"
+                  />
+                </ValidationProvider>
+                <div class="input-text clearFix">
+                  <span class="pwd"></span>
+                  <input type="text" placeholder="请输入密码" />
+                </div>
+                <div class="setting clearFix">
+                  <label class="checkbox inline">
+                    <input name="m1" type="checkbox" value="2" checked="" />
+                    自动登录
+                  </label>
+                  <span class="forget">忘记密码？</span>
+                </div>
+                <button class="btn" type="submit">登&nbsp;&nbsp;录</button>
+              </form>
+            </ValidationObserver>
 
             <div class="call clearFix">
               <ul>
@@ -67,8 +79,36 @@
 </template>
 
 <script>
+import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
+import { required } from "vee-validate/dist/rules";
+import {phoneReg} from "@/utils/regs"
+
+extend("phone", {
+  validate(val) {
+    return phoneReg.test(val);
+  },
+  message: "手机号不符合规范",
+});
+
+extend("required", {
+  ...required,
+  message: "请输入内容",
+});
+
 export default {
   name: "Login",
+  data() {
+    return { user: { phone: "" } };
+  },
+  methods: {
+    login() {
+      console.log("表单检验通过");
+    },
+  },
+  components: {
+    ValidationObserver,
+    ValidationProvider,
+  },
 };
 </script>
 
