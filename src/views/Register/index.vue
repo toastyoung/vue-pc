@@ -5,7 +5,7 @@
       <h3>
         注册新用户
         <span class="go"
-          >我有账号，去 <a href="login.html" target="_blank">登陆</a>
+          >我有账号，去 <a @click="$router.push('/login')">登录</a>
         </span>
       </h3>
       <ValidationObserver v-slot="{ handleSubmit }">
@@ -34,7 +34,8 @@
           >
             <label>验证码:</label>
             <input type="text" placeholder="请输入验证码" v-model="user.code" />
-            <button>发送验证码</button>
+            <a @click="sendCode" v-if="!isSendCode">发送验证码</a>
+            <a v-else class="disabled">还剩{{ time }}s</a>
             <span class="error-msg">{{ errors[0] }}</span>
           </ValidationProvider>
           <ValidationProvider
@@ -46,7 +47,7 @@
           >
             <label>登录密码:</label>
             <input
-              type="text"
+              type="password"
               placeholder="请输入你的登录密码"
               v-model="user.password"
             />
@@ -61,7 +62,7 @@
           >
             <label>确认密码:</label>
             <input
-              type="text"
+              type="password"
               placeholder="请输入确认密码"
               v-model="user.rePassword"
             />
@@ -106,6 +107,7 @@
 <script>
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
 import { codeReg } from "@/utils/regs";
+import { reqSendCode, reqRegister } from "@/api/user";
 import "@/utils/commonValidation";
 
 extend("code", {
@@ -129,6 +131,8 @@ extend("isVerify", {
   message: "请同意用户协议",
 });
 
+const MAX_TIME = 60;
+
 export default {
   name: "Register",
   data() {
@@ -140,6 +144,8 @@ export default {
         rePassword: "",
         isVerify: false,
       },
+      time: MAX_TIME,
+      isSendCode: false,
     };
   },
   components: {
@@ -147,9 +153,36 @@ export default {
     ValidationProvider,
   },
   methods: {
-    register() {
-      console.log("通过");
+    async register() {
+      const { phone, password, code } = this.user;
+      await reqRegister({ phone, password, code });
+      this.$router.push("/login");
     },
+    // 发送验证码
+    async sendCode() {
+      const { phone } = this.user;
+      if (!phone) {
+        alert("请输入手机号");
+        return;
+      }
+
+      this.isSendCode = true;
+      this.timer = setInterval(() => {
+        if (this.time <= 1) {
+          clearInterval(this.timer);
+          this.isSendCode = false;
+          this.time = MAX_TIME;
+          return;
+        }
+        this.time--;
+      }, 1000);
+
+      const res = await reqSendCode(phone);
+      console.log(res);
+    },
+  },
+  beforeDestroy() {
+    clearInterval(this.timer);
   },
 };
 </script>
@@ -266,6 +299,9 @@ export default {
         margin: 15px 0;
       }
     }
+  }
+  .disabled {
+    color: red;
   }
 }
 </style>

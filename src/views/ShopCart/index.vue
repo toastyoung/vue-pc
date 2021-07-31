@@ -70,7 +70,7 @@
           <i class="summoney">{{ totalPrice }}</i>
         </div>
         <div class="sumbtn">
-          <a class="sum-btn" href="###" target="_blank">结算</a>
+          <router-link to="/trade" class="sum-btn">结算</router-link>
         </div>
       </div>
     </div>
@@ -93,8 +93,8 @@ export default {
     };
   },
   async mounted() {
-    const data = await reqGetCartList();
-    this.cartList = data[0].cartInfoList;
+    const res = await reqGetCartList();
+    this.cartList = res.reduce((p, c) => p.concat(c.cartInfoList), []);
   },
   methods: {
     // 更新商品选中状态

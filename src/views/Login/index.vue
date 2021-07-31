@@ -15,7 +15,7 @@
 
           <div class="content">
             <ValidationObserver v-slot="{ handleSubmit }">
-              <form @submit.prevent="handleSubmit(login)">
+              <form @submit.prevent="handleSubmit(submit)">
                 <ValidationProvider
                   class="input-text clearFix"
                   tag="div"
@@ -23,17 +23,29 @@
                   mode="lazy"
                   v-slot="{ errors }"
                 >
-                  <span>{{ errors[0] }}</span>
+                  <span></span>
                   <input
                     type="text"
                     placeholder="邮箱/用户名/手机号"
                     v-model="user.phone"
                   />
+                  <i style="color: red">{{ errors[0] }}</i>
                 </ValidationProvider>
-                <div class="input-text clearFix">
+                <ValidationProvider
+                  class="input-text clearFix"
+                  tag="div"
+                  rules="required|password"
+                  mode="lazy"
+                  v-slot="{ errors }"
+                >
                   <span class="pwd"></span>
-                  <input type="text" placeholder="请输入密码" />
-                </div>
+                  <input
+                    type="text"
+                    placeholder="请输入密码"
+                    v-model="user.password"
+                  />
+                  <i style="color: red">{{ errors[0] }}</i>
+                </ValidationProvider>
                 <div class="setting clearFix">
                   <label class="checkbox inline">
                     <input name="m1" type="checkbox" value="2" checked="" />
@@ -79,30 +91,22 @@
 </template>
 
 <script>
-import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
-import { required } from "vee-validate/dist/rules";
-import {phoneReg} from "@/utils/regs"
+import { ValidationObserver, ValidationProvider } from "vee-validate";
+import { mapActions } from "vuex";
 
-extend("phone", {
-  validate(val) {
-    return phoneReg.test(val);
-  },
-  message: "手机号不符合规范",
-});
-
-extend("required", {
-  ...required,
-  message: "请输入内容",
-});
+import "@/utils/commonValidation";
 
 export default {
   name: "Login",
   data() {
-    return { user: { phone: "" } };
+    return { user: { phone: "", password: "" } };
   },
   methods: {
-    login() {
-      console.log("表单检验通过");
+    ...mapActions("user", ["login"]),
+
+    async submit() {
+      await this.login(this.user);
+      this.$router.push("/");
     },
   },
   components: {

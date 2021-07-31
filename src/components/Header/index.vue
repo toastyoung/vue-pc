@@ -2,9 +2,16 @@
   <div class="header">
     <div class="header-top">
       <span class="header-user">
-        尚品汇欢迎您！请
-        <router-link to="/login" class="header-user-login">登录</router-link>
-        <router-link to="/register">免费注册</router-link>
+        尚品汇欢迎您！
+        <span v-if="!nickName">
+          请
+          <router-link to="/login" class="header-user-login">登录</router-link>
+          <router-link to="/register">免费注册</router-link>
+        </span>
+        <span v-else>
+          {{ nickName }}
+          <button @click="exit">退出登录</button>
+        </span>
       </span>
       <ul class="header-nav">
         <li><a>我的订单</a></li>
@@ -32,6 +39,7 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
 export default {
   name: "Header",
   data() {
@@ -39,7 +47,11 @@ export default {
       keyword: this.$route.params.keyword,
     };
   },
+  computed: {
+    ...mapState("user", ["nickName"]),
+  },
   methods: {
+    ...mapActions("user", ["logout"]),
     goSearch() {
       const {
         keyword,
@@ -55,6 +67,10 @@ export default {
         location.params = { keyword };
       }
       this.$router.history.push(location);
+    },
+    async exit() {
+      await this.logout();
+      location.reload();
     },
   },
   watch: {

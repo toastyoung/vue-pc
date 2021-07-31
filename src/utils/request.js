@@ -2,6 +2,7 @@ import axios from "axios";
 import nProgress from "nprogress";
 import generateUserTempId from "./userTempId";
 import "nprogress/nprogress.css";
+import store from '@/store'
 
 nProgress.configure({ showSpinner: false });
 
@@ -22,6 +23,8 @@ const request = axios.create({
 // 请求拦截器
 request.interceptors.request.use((config) => {
   config.headers.userTempId = generateUserTempId();
+  config.headers.token = store.state.user.token;
+
 
   nProgress.start();
   return config;
