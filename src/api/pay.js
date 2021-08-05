@@ -33,3 +33,20 @@ export const reqSubmitOrder = ({
     params: { tradeNo },
   });
 };
+
+// 获取支付二维码
+export const reqGetWechatQRCode = (orderId) => {
+  return request({
+    method: "GET",
+    url: `/payment/weixin/createNative/${orderId}`,
+  });
+};
+
+// 获取订单支付状态
+export const reqGetPayStatus = (orderId) => {
+  return request({
+    method: "GET",
+    url: `payment/weixin/queryPayStatus/${orderId}`,
+  });
+};
+

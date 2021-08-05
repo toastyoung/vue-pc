@@ -7,7 +7,7 @@
   >
     <div class="swiper-wrapper">
       <div class="swiper-slide" v-for="img in imageList" :key="img.id">
-        <img :src="img.imgUrl" />
+        <img v-lazy="img.imgUrl" />
       </div>
     </div>
     <!-- 如果需要导航按钮 -->

@@ -1,14 +1,11 @@
 <template>
   <div class="swiper-container">
     <div class="swiper-wrapper">
-      <div class="swiper-slide">
-        <img :src="imgSrc" />
-      </div>
+      <div class="swiper-slide"><img v-lazy="imgSrc" /></div>
     </div>
     <div class="swiper-button-next"></div>
     <div class="swiper-button-prev"></div>
   </div>
-  
 </template>
 
 <script>

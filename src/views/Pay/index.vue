@@ -78,7 +78,7 @@
         <div class="hr"></div>
 
         <div class="submit">
-          <router-link class="btn" to="/paysuccess">立即支付</router-link>
+          <button class="btn" @click="wxPay">立即支付</button>
         </div>
         <div class="otherpay">
           <div class="step-tit">
@@ -91,12 +91,53 @@
         </div>
       </div>
     </div>
+    <Dialog title="微信支付" :visible.sync="visible" width="30%">
+      <span class="wx-pay-qrcode">
+        <img v-lazy="qrCode" alt="二维码失效" />
+      </span>
+      <template #footer>
+        <button>支付遇到问题</button>
+        <button>支付成功</button>
+      </template>
+    </Dialog>
   </div>
 </template>
 
 <script>
+import QRCode from "qrcode";
+import { reqGetWechatQRCode, reqGetPayStatus } from "@/api/pay";
+
 export default {
   name: "Pay",
+  data() {
+    return {
+      visible: false,
+      qrCode: "",
+    };
+  },
+  methods: {
+    async wxPay() {
+      this.visible = true;
+      const { orderId } = this.$route.query;
+      const { codeUrl } = await reqGetWechatQRCode(orderId);
+      // 二维码
+      QRCode.toDataURL(codeUrl, (err, url) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        this.qrCode = url;
+        // 循环查询订单支付状态
+        this.timer = setInterval(async () => {
+          await reqGetPayStatus(orderId);
+          this.$router.push("/paysuccess");
+        }, 5000);
+      });
+    },
+  },
+  beforeDestroy() {
+    clearInterval(this.timer);
+  },
 };
 </script>
 
@@ -248,6 +289,10 @@ export default {
         text-decoration: none;
       }
     }
+  }
+  .wx-pay-qrcode {
+    display: block;
+    text-align: center;
   }
 }
 </style>
